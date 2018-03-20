@@ -12,7 +12,7 @@ function(install_third_party_libs)
   # Loop through all the library files in our list
   foreach(library ${ALLLIBS})
     get_filename_component(extension ${library} EXT)
-    if ("${extension}" STREQUAL ".so" OR "${extension}" STREQUAL ".dylib" )
+    #if ("${extension}" STREQUAL ".so" OR "${extension}" STREQUAL ".dylib" )
       #get path to library in libararypath
       get_filename_component(librarypath ${library} PATH)
 
@@ -20,10 +20,10 @@ function(install_third_party_libs)
       file(RELATIVE_PATH relPath "${thirdPartyDir}/lib" ${library})
 
       # Check if the file is a symlink
-      #execute_process(COMMAND readlink ${library} OUTPUT_VARIABLE link)
+      execute_process(COMMAND readlink ${library} OUTPUT_VARIABLE link)
       message(STATUS "${library}")
       execute_process(COMMAND cp -L ${library} ${installLibFolder})
-    endif()
+    #endif()
   endforeach()
 
   # Copy over QT Frameworks
