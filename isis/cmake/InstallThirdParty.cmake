@@ -12,9 +12,12 @@ function(install_third_party_libs)
   # Loop through all the library files in our list
   foreach(library ${ALLLIBS})
     get_filename_component(extension ${library} EXT)
-    #if ("${extension}" STREQUAL ".so" OR "${extension}" STREQUAL ".dylib" )
+    # check if extension is so or dylib (avoid non-libraries such as directories)
+    string( COMPARE EQUAL ${extension} ".so" so)
+    string( COMPARE EQUAL ${extension} ".dylib" dylib)
+    if ( ${extension} MATCHES ".so.*" OR ${extension} MATCHES ".dylib.*")
       #get path to library in libararypath
-      get_filename_component(librarypath ${library} PATH)
+      get_filename_component(librarypath ${library} DIRECTORY)
 
       # Copy file to output directory
       file(RELATIVE_PATH relPath "${thirdPartyDir}/lib" ${library})
@@ -22,13 +25,26 @@ function(install_third_party_libs)
       # Check if the file is a symlink
       execute_process(COMMAND readlink ${library} OUTPUT_VARIABLE link)
       message(STATUS "${library}")
+
+      # check if we have a symlink
+      if(IS_SYMLINK ${library})
+        string(STRIP ${link} strippedlink)
+        execute_process(COMMAND cp --preserve=links "${librarypath}/${strippedlink}" ${installLibFolder})
+
+        while(IS_SYMLINK "${librarypath}/${strippedlink}")
+          execute_process(COMMAND readlink "${librarypath}/${strippedlink}" OUTPUT_VARIABLE link)
+          string(STRIP ${link} strippedlink)
+          execute_process(COMMAND cp --preserve=links "${librarypath}/${strippedlink}" ${installLibFolder})
+        endwhile(IS_SYMLINK "${librarypath}/${strippedlink}")
+
+      endif()
       execute_process(COMMAND cp -L ${library} ${installLibFolder})
-    #endif()
+    endif()
   endforeach()
 
   # Copy over QT Frameworks
   if(APPLE)
-    # execute_process(COMMAND cp -Lr ${library} ${installLibFolder})
+    execute_process(COMMAND cp -Lr ${library} ${installLibFolder})
   endif(APPLE)
 endfunction()
 

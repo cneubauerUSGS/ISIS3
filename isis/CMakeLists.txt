@@ -100,7 +100,7 @@ else()
 endif()
 
 if(develop)
-  
+
 endif()
 
 if(${testOutputDir} STREQUAL "OFF")
@@ -137,6 +137,15 @@ link_directories(${ALLLIBDIRS})
 # inject ISISROOT
 add_definitions( -DISISROOT="${CMAKE_SOURCE_DIR}" )
 add_definitions( -DISISBUILDDIR="${CMAKE_BINARY_DIR}" )
+
+# inject QT_PLUGIN_DIR
+if (APPLE)
+  string(REGEX REPLACE "lib/.*" "plugins/" QT_PLUGIN_DIR QT5_CORE_DIR)
+else()
+  string(REGEX REPLACE "include/.*" "plugins/" QT_PLUGIN_DIR QT5_CORE_INCLUDE_DIR)
+endif()
+
+add_definitions( -DQT_PLUGIN_DIR="${QT_PLUGIN_DIR}")
 
 # add isis headers
 file(GLOB ISIS_HEADERS ${CMAKE_SOURCE_DIR}/src/*/objs/*/*.h
@@ -181,7 +190,7 @@ endif()
 
 # Add a config file to the install bin directory so that QT can find the plugin libraries.
 file(WRITE "${CMAKE_BINARY_DIR}/qt.conf" "[Paths]\nPlugins=../3rdParty/plugins/\n")
-install(FILES "${CMAKE_BINARY_DIR}/qt.conf" DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/xml)
+install(FILES "${CMAKE_BINARY_DIR}/qt.conf" DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 #Create the inc directory
 execute_process(COMMAND mkdir -p ${CMAKE_BINARY_DIR}/inc)

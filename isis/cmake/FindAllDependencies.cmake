@@ -184,7 +184,7 @@ endif(APPLE)
 
 get_cmake_property(_variableNames VARIABLES) # Get All VARIABLES
 foreach (_variableName ${_variableNames})
-#message("VAR=${_variableName}")
+    # message("VAR=${_variableName}")
     if (_variableName MATCHES ".+_INCLUDE_DIR$")
       list(APPEND ALLINCDIRS "${${_variableName}}")
     elseif (_variableName MATCHES ".+_INCLUDE_PATH$")
@@ -231,4 +231,3 @@ endforeach()
 list(REMOVE_DUPLICATES ALLLIBDIRS)
 list(REMOVE_DUPLICATES ALLLIBS)
 list(REMOVE_DUPLICATES ALLINCDIRS)
-

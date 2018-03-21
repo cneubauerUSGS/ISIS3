@@ -64,7 +64,7 @@ void IsisMain() {
                        + in.name() + "].", _FILEINFO_);
     }
   }
-  
+
   // Convert the pds file to a cube
   Pvl *pdsLabel = new Pvl();
 
@@ -111,7 +111,7 @@ void IsisMain() {
   ocube->write(*hist);
 
   p.EndProcess();
-  
+
   delete pdsLabel;
   if (tempFile) QFile::remove(temp.expanded());
 }
@@ -448,7 +448,7 @@ void TranslateVoyagerLabels(Pvl &inputLab, Cube *ocube) {
                     + ".template.cub");
   res += PvlKeyword("Status", "Nominal");
   ocube->putGroup(res);
-  NaifStatus::CheckErrors();   
+  NaifStatus::CheckErrors();
 }
 
 
@@ -469,8 +469,9 @@ QByteArray fixLabels(QString fileName, History *hist){
 
   imgFile.setFileName(fileName);
 
-  if (!imgFile.open(QFile::ReadOnly|QIODevice::Text))
+  if (!imgFile.open(QFile::ReadOnly|QIODevice::Text)) {
     return null;
+  }
 
   // Read the IMG file into a byte array
   QByteArray fileData = imgFile.readAll();
