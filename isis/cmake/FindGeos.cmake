@@ -16,6 +16,10 @@ find_library(GEOS_LIBRARY
 find_library(GEOS_C_LIBRARY
   NAMES geos_c
 )
+find_library(C_LIBRARY
+  NAMES c
+  PATH_SUFFIXES /usr/lib/x86_64-linux-gnu/
+)
 
 message( "-- GEOS INCLUDE DIR: "  ${GEOS_INCLUDE_DIR} )
 message( "-- GEOS LIB: "  ${GEOS_LIBRARY} )
