@@ -71,6 +71,14 @@ option(buildTests      "Set up unit, application, and module tests."    ON  )
 option(JP2KFLAG        "Whether or not to build using JPEG2000 support" ON  )
 option(develop         "Use a devleopment configuration"                ON  )
 
+# if cmake install prefix is not set, and conda env is activated, use the
+# conda env as the install directory
+if(DEFINED ENV{CONDA_PREFIX} AND CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+  set(CMAKE_INSTALL_PREFIX $ENV{CONDA_PREFIX})
+endif()
+
+message("Installing in: ${CMAKE_INSTALL_PREFIX}")
+
 # options only allow on/off but this flag is piped into ISIS as ENABLEJP2K
 # needs to be either 1 or 0 for C style true false
 if(JP2KFLAG)
@@ -80,9 +88,11 @@ endif()
 # Prioritize passed in variables over env vars, probably a better way to do this
 if(DEFINED ENV{ISIS3DATA} AND NOT isis3Data)
   set(isis3Data $ENV{ISIS3DATA})
+  set(isis3Data ON)
 endif()
 if(DEFINED ENV{ISIS3TESTDATA} AND NOT isis3TestData)
   set(isis3TestData $ENV{ISIS3TESTDATA})
+  set(isis3TestData ON)
 endif()
 
 if(EXISTS ${isis3Data})
@@ -159,11 +169,11 @@ set(CORE_LIB_NAME isis3)
 # Specify relative library include paths which will be set up on
 #  the installed files.
 if(APPLE)
-  set(CMAKE_INSTALL_RPATH "@loader_path/../lib;@loader_path/../3rdParty/lib")
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};@loader_path/../lib;@loader_path/../3rdParty/lib")
 else()
-  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib;$ORIGIN/../3rdParty/lib")
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};$ORIGIN/../lib;$ORIGIN/../3rdParty/lib")
 endif()
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # We will set up some links with these files at the end of the install process so
 #  make sure they are cleared at the start of the install process.
@@ -209,18 +219,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/make DESTINATION ${CMAKE_INSTALL_PREFIX})
 add_subdirectory(src objects)
 
 # Set up third party libraries for installation
-install_third_party()
-
-# # Create a link from the build/objects directory to each folder in 3rdPartyLibs/plugins.
-# # - This is required so that the plugins can be found during unit tests.
-# # TIP: Set "export QT_DEBUG_PLUGINS=1" to help debug plugin errors.
-# foreach(plugin ${THIRDPARTYPLUGINFOLDERS})
-#   get_filename_component(pluginName ${plugin} NAME)
-#   if(NOT EXISTS ${CMAKE_BINARY_DIR}/lib/${pluginName})
-#     execute_process(COMMAND ln -s "${plugin}" ${pluginName}
-#     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-#   endif()
-# endforeach()
+# install_third_party()
 
 # Set up documentation build target.
 # - This script is called by running "make docs".
