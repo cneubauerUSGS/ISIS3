@@ -143,4 +143,5 @@ find_library(PYTHON_LIBRARY
 
 find_library(C_LIBRARY
   NAMES c
+  PATH_SUFFIXES /usr/lib/x86_64-linux-gnu/
 )
