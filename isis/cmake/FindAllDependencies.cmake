@@ -7,6 +7,8 @@
 message("USING CONDA PREFIX: $ENV{CONDA_PREFIX}")
 list(APPEND CMAKE_FIND_ROOT_PATH $ENV{CONDA_PREFIX} $ENV{CONDA_PREFIX}/lib/cmake/Qt5)
 
+list(APPEND CMAKE_LIBRARY_PATH "/usr/lib/x86_64-linux-gnu/")
+
 # Add thirdPartyCppFlags
 set(thirdPartyCppFlags ${thirdPartyCppFlags} -DGMM_USES_SUPERLU)
 set(thirdPartyCppFlags ${thirdPartyCppFlags} "-DENABLEJP2K=${JP2KFLAG}")
@@ -52,7 +54,7 @@ find_package(Qt5 COMPONENTS
 # For these, we pass in a version number, and use it in the path suffix
 # This only applies to v007, and outside of the building, we should only expect standard installs
 # The v007-specific installs are listed beside their find_package calls below:
-find_package(Boost     1.59.0  REQUIRED) # "boost/boost${Boost_FIND_VERSION}/boost/"
+find_package(Boost     1.59.0  REQUIRED NO_CMAKE_SYSTEM_PATH) # "boost/boost${Boost_FIND_VERSION}/boost/"
 find_package(Bullet    2.86    REQUIRED)
 find_package(Cholmod   4.4.5   REQUIRED) # "SuiteSparse/SuiteSparse${Cholmod_FIND_VERSION}/SuiteSparse/"
 find_package(CSPICE    65      REQUIRED)
@@ -72,12 +74,12 @@ find_package(SuperLU   4.3     REQUIRED) # "superlu/superlu${SuperLU_FIND_VERSIO
 find_package(TIFF      4.0.5   REQUIRED) # "tiff/tiff-${TIFF_FIND_VERSION}"
 find_package(TNT       126     REQUIRED) # TNT version is 1.2.6, but v007 directory is "tnt/tnt126/"
 find_package(XercesC   3.1.2   REQUIRED) # "xercesc/xercesc-${XercesC_FIND_VERSION}/"
-find_package(X11       6       REQUIRED)
+find_package(X11       6       REQUIRED NO_CMAKE_SYSTEM_PATH)
 find_package(nanoflann         REQUIRED)
 find_package(PNG               REQUIRED)
 find_package(Kakadu)
-find_package(Geos    3.5.0   REQUIRED)
-
+find_package(Geos    3.5.0     REQUIRED)
+find_package(C                 REQUIRED)
 
 # Im this case, we specify the version numbers being searched for in the non-traditional installs.
 if(APPLE)
